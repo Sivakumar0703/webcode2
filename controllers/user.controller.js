@@ -6,6 +6,10 @@ const { hashPassword, hashCompare,createToken } = require('./authorization.contr
 
 //userName,email,mobile,password,role
 
+userRouter.get('/',(req,res)=>{
+    res.status(200).json({message:"done",res})
+})
+
 userRouter.post('/signup', async (req, res) => {
 
     try {
