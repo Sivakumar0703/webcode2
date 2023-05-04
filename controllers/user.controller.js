@@ -6,8 +6,13 @@ const { hashPassword, hashCompare,createToken } = require('./authorization.contr
 
 //userName,email,mobile,password,role
 
-userRouter.get('/',(req,res)=>{
-    res.status(200).json({message:"done",res})
+userRouter.get('/',async(req,res)=>{
+    try {
+        let user = await userModel.find();
+        res.status(200).json({user,message:"done"})
+    } catch (error) {
+        res.send({message:"unable to get user data",error})
+    }
 })
 
 userRouter.post('/signup', async (req, res) => {

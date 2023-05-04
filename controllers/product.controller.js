@@ -11,8 +11,13 @@ get product by id
 
 //get
 
-productRouter.get("/allProducts", (req, res, next) => {
-    res.status(200).json({ msg: "product data fetched"})
+productRouter.get("/", async(req, res, next) => {
+    try {
+        let products = await productModel.find();
+        res.status(200).json({products,message:"all product data are fetched"})
+    } catch (error) {
+        res.status(400).json({message:"not able to get product data",error})
+    }
 });
 
 
@@ -49,6 +54,27 @@ productRouter.post("/addProducts", (req, res, next) => {
   //  console.log("request body :",req.body);
  
 });
+
+// put - update 
+
+productRouter.put('/:id', async(req,res,next) => {
+    try {
+        let products = await productModel.findOne({_id:req.params.id})
+        if(products){
+            products.name = req.body.name
+            products.type = req.body.type
+            products.price = req.body.price
+            products.count = req.body.count
+
+            await products.save()
+
+            res.status(200).json({message:"product updated"})
+        }
+    } catch (error) {
+        res.status(500).json({message:"product doen't exists",error})
+        console.log(error);
+    }
+})
 
 
 
