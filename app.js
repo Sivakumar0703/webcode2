@@ -21,16 +21,4 @@ app_server.use("/cart",cartRouter);
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 module.exports = app_server;
