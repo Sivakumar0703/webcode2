@@ -1,6 +1,6 @@
 const express = require("express");
 const app_server = express();
-const parser = require("body-parser");
+//const parser = require("body-parser");
 const productRouter = require("./controllers/product.controller");
 const bodyParser = require("body-parser");
 const userRouter = require("./controllers/user.controller");

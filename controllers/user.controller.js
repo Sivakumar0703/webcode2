@@ -1,5 +1,5 @@
 const userRouter = require("express").Router();
-const userModel = require('../models/user.model');
+const userModel = require('../models/user.model'); // using the user collection
 const { hashPassword, hashCompare,createToken } = require('./authorization.controller');
 
 // user/signup
@@ -23,8 +23,8 @@ userRouter.post('/signup', async (req, res) => {
         req.body.password = hashedPassword
 
         let user = await userModel.find({ email: req.body.email })
-        if (user) {
-            let user = await userModel.create(req.body);
+        if (!user) {
+            let user = await userModel.create(req.body);// get data from body(front end)
             res.status(201).json({
                 message: "Signup successfull"
             })
