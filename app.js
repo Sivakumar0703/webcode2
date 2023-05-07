@@ -6,12 +6,14 @@ const bodyParser = require("body-parser");
 const userRouter = require("./controllers/user.controller");
 const cartRouter = require("./controllers/cart.controller")
 const indexRouter = require("./index")
+const cors = require('cors')
 
 require("./dbconfig");
 
 app_server.use(bodyParser.urlencoded({extended:true}));
 app_server.use(bodyParser.json());
 
+app_server.use(cors());
 
 
 app_server.use("/products" , productRouter);

@@ -2,29 +2,41 @@ const mongoose = require("mongoose");
 
 const productSchema = mongoose.Schema({
 
-    name:{
+    name: {
+        type: String,
+        required: true
+    },
+    type: {
+        type: String,
+        required: true
+    },
+    price: {
+        type: Number,
+        required: true
+    },
+    count: {
+        type: Number
+    },
+    image: {
         type:String,
         required:true
     },
-    type:{
+    currentbooking: [],
+    description: {
         type:String,
         required:true
     },
-    price:{
-       type:Number,
-       required:true
-    },
-    count:{
-        type:Number
-    },
-    createdOn:{
-        type:Date,
-        default:Date.now()
-    },
-    updatedOn:{
-        type:Date,
+    createdOn: {
+        type: Date,
         default: Date.now()
-    }
-})
+    },
+    updatedOn: {
+        type: Date,
+        default: Date.now()
+    },
+},
+    {
+        timestamps: true
+    })
 
-module.exports = mongoose.model('products',productSchema);
+module.exports = mongoose.model('products', productSchema);
