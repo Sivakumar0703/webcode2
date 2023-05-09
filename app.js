@@ -17,7 +17,7 @@ app_server.use(cors());
 
 
 app_server.use("/products" , productRouter);
-//app_server.use(express.json());
+app_server.use(express.json());
 
 app_server.use("/users",userRouter);
 

@@ -20,6 +20,26 @@ productRouter.get("/", async(req, res, next) => {
     }
 });
 
+// 9-5-23 get product by id
+
+productRouter.post("/getProductById", async(req, res, next) => {
+
+    const productId = req.body.productId
+    try {
+        let product = await productModel.findOne({_id:productId});
+        res.status(200).json({product,message:" product data are fetched"})
+    } catch (error) {
+        res.status(400).json({message:"not able to get product data",error})
+    }
+});
+
+
+
+
+
+
+
+
 
 // post => add new product
 

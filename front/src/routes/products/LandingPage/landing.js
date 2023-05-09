@@ -1,37 +1,82 @@
-
+/*
 import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/layout/layout';
 import axios from 'axios';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import '../LandingPage/landingPage.css';
+import Electronics from '../electronics/electronics';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import '../LandingPage/landingPage.css'
+import HomePage from '../home/homePage';
+import Button from 'react-bootstrap/Button';
+import Cart from '../cart/cart';
+// import Modal from 'react-bootstrap/Modal';
+// import HomePage from '../home/homePage';
+
 
 const Landing = () => {
 
-  const[product,setProduct] = useState(5);
+  const [product, setProduct] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect( ()=>{
-   
-      const data =  fetch('https://webcodetwo.onrender.com/products').then((res) => res).then((result)=>result);
-     
-      
-      console.log(data)
-   
-   
-  },[])
+
+
+  //const data =  fetch('https://webcodetwo.onrender.com/products').then((res) => res.json()).then((result)=>setProduct(result));
+
+
+  useEffect(() => {
+
+    async function getData() {
+      try {
+        const data = (await axios.get('https://webcodetwo.onrender.com/products')).data
+
+        console.log(data.products)
+        setProduct(data.products)
+        setLoading(false)
+
+      } catch (error) {
+        console.log(error)
+        setLoading(false)
+      }
+    }
+    getData();
+
+  }, [])
+
+
 
 
   return (
-    <div>
+
+    <Layout>
 
 
-<Layout>
+
+      {loading ? <h1>loading</h1> : (product.map((a) => {
+
+        
+
+        return  <HomePage data={a} key={a._id}/>
+                      
 
 
-<p>there are ${product} products</p>
+
+      
 
 
-</Layout>
-    </div>
+
+
+
+
+
+      }))}
+
+
+    </Layout>
   )
 }
 
-export default Landing 
+export default Landing
+
+*/
 

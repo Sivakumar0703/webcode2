@@ -1,18 +1,21 @@
 
 import './App.css';
 
-import Header from './components/header/header';
-import Footer from './components/footer/footer';
-import Search from './components/search/search';
-import Categories from './components/categories/categories';
-import Furniture from './routes/products/furniture/furniture';
+//import Header from './components/header/header';
+// import Footer from './components/footer/footer';
+// import Search from './components/search/search';
+// import Categories from './components/categories/categories';
+// import Furniture from './routes/products/furniture/furniture';
 import {BrowserRouter  , Route , Link, Routes} from 'react-router-dom';
-import Landing from './routes/products/LandingPage/landing';
-import Layout from './components/layout/layout';
+// import Landing from './routes/products/LandingPage/landing';
+// import Layout from './components/layout/layout';
 import HomePage from './routes/products/home/homePage';
+import Electronics from './routes/products/electronics/electronics';
+import Cart from './routes/products/cart/cart';
 
 
 
+// <Route path="/landing"  element={<Landing />} />
 
 function App() {
   return (
@@ -21,9 +24,12 @@ function App() {
        <Search />
        <Categories />
        <Furniture />
-       <Footer /> */}
+       <Footer />
+       
+       
+       */}
 
-<Layout>
+
 
 <BrowserRouter>
 
@@ -31,24 +37,17 @@ function App() {
 
   <Route path='/' element={<HomePage />}/>
   
-<Route path="/landing"  element={<Landing />} />
+
+
+<Route path='/electronics' element={<Electronics />} />
+
+<Route path='/cart/:productId' element={<Cart />}></Route>
+
+
 
 </Routes>
 
 </BrowserRouter>
-
-
-
-
-
-
-
-
-
-</Layout>
-
-
-
 
     </div>
   );
