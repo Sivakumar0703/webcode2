@@ -12,7 +12,8 @@ import {BrowserRouter  , Route , Link, Routes} from 'react-router-dom';
 import HomePage from './routes/products/home/homePage';
 import Electronics from './routes/products/electronics/electronics';
 import Cart from './routes/products/cart/cart';
-
+import Register from './routes/products/register/register';
+import Login from './routes/products/login/login';
 
 
 // <Route path="/landing"  element={<Landing />} />
@@ -41,9 +42,11 @@ function App() {
 
 <Route path='/electronics' element={<Electronics />} />
 
-<Route path='/cart/:productId' element={<Cart />}></Route>
+<Route path='/cart/:productId' element={<Cart />} />
 
+<Route path='/register' element={<Register />} />
 
+<Route path='/login' element={<Login />} />
 
 </Routes>
 

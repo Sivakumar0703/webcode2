@@ -16,13 +16,14 @@ userRouter.get('/',async(req,res)=>{
 })
 
 userRouter.post('/signup', async (req, res) => {
-
+//const newUser = new User(req.body)
     try {
 
         let hashedPassword = await hashPassword(req.body.password)
         req.body.password = hashedPassword
 
-        let user = await userModel.find({ email: req.body.email })
+        let user = await userModel.findOne({ email: req.body.email })
+        console.log(user)
         if (!user) {
             let user = await userModel.create(req.body);// get data from body(front end)
             res.status(201).json({
@@ -31,7 +32,7 @@ userRouter.post('/signup', async (req, res) => {
             console.log(user);
 
         } else {
-            res.status(400).json({ message: "user already exist" })
+            res.status(400).json({ message: "user already exist!" })
         }
 
     } catch (error) {
@@ -80,7 +81,7 @@ userRouter.post('/login', async (req, res) => {
 */
 
 userRouter.post('/login', async (req, res) => {
-
+// const {email , password} = req.body
     try {
         let user = await userModel.findOne({ email: req.body.email });
 

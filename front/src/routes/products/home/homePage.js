@@ -10,7 +10,7 @@ import Modal from 'react-bootstrap/Modal';
 
 //today
 import axios from 'axios';
-
+import Loading from '../../../components/loading/loading';
 
 
 
@@ -32,7 +32,7 @@ const HomePage = () => {
       try {
         const data = (await axios.get('https://webcodetwo.onrender.com/products')).data
 
-        // console.log(data.products[1].name)
+         console.log(data.products[1].name)
         setProduct(data.products)
         setLoading(false)
 
@@ -54,7 +54,7 @@ const HomePage = () => {
 
       <h1>homepage </h1>
       {/* today */}
-      {loading ? <h1>loading</h1> : (product.map((data) => {
+      {loading ? <h1><Loading /></h1> : (product.map((data) => {
 
         return (
 
