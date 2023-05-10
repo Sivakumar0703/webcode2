@@ -18,8 +18,8 @@ const hashCompare= async(password,hashedPassword)=> { // password = req.body.pas
 
 }
 
-const createToken = async(name,email,id,role) => {
-    let token = await jwt.sign()
+const createToken = async(payload) => { // name,email,id,role
+    let token = await jwt.sign(payload,secretKey)
     return token
 }
 

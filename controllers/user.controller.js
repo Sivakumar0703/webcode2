@@ -82,10 +82,13 @@ userRouter.post('/login', async (req, res) => {
 
 userRouter.post('/login', async (req, res) => {
 // const {email , password} = req.body
+
     try {
+        
         let user = await userModel.findOne({ email: req.body.email });
 
         if (user) {
+            
             if(await hashCompare(req.body.password , user.password)){
                 //create token
                 let token = await createToken({
@@ -98,6 +101,7 @@ userRouter.post('/login', async (req, res) => {
                     message: "Signup successfull",
                     token
                 })
+                console.log('login user data',user)
             } else {
                 res.status(400).json({ message: "invalid password" })
             }
@@ -107,9 +111,11 @@ userRouter.post('/login', async (req, res) => {
 
 
     } catch (error) {
+        console.log(error)
         res.status(500).json({
-            message: "Internal Server Error",
+            message: "Internal Server Error!",
             error: error
+            
         })
 
     }

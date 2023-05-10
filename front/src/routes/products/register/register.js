@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const Register = () => {
 
-const[name , setName] = useState('');
+const[userName , setUserName] = useState('');
 const[email , setEmail] = useState('');
 const[mobile , setMobile] =useState('');
 const[password , setPassword] = useState('');
@@ -15,7 +15,7 @@ async function signup(){
     
     if(password === confirmpassword){
         const user = {
-        name,
+        userName,
         email,
         mobile,
         password,
@@ -25,6 +25,7 @@ async function signup(){
 
 try {
     const result = await axios.post('https://webcodetwo.onrender.com/users/signup' , user).data
+    
 } catch (error) {
     console.log(error)
 }
@@ -48,7 +49,7 @@ try {
 
       <h1 style={{textAlign:"center"}}>REGISTER HERE</h1>
 
-      <TextField id="outlined-basic1" label="USER NAME" variant="outlined" fullWidth margin="normal" value={name} onChange={(e)=>setName(e.target.value)}/> <br />
+      <TextField id="outlined-basic1" label="USER NAME" variant="outlined" fullWidth margin="normal" value={userName} onChange={(e)=>setUserName(e.target.value)}/> <br />
 
       <TextField id="outlined-basic2" label="EMAIL" variant="outlined" fullWidth margin="normal" value={email} onChange={(e)=>setEmail(e.target.value)} /> <br />
 

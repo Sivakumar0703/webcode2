@@ -13,19 +13,28 @@ import IconButton from '@mui/material/IconButton';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 
+import axios from 'axios';
+
 
 const Login = () => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    function login() {
+    async function login() {
 
         const user = {
             email,
             password,
         }
         console.log(user);
+
+        try {
+            const result = await axios.post('https://webcodetwo.onrender.com/users/login' , user).data
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     //  <TextField id="standard-basic" label="EMAIL" variant="standard" fullWidth margin="normal" value={email} onChange={(e) => setEmail(e.target.value)} /> <br />
