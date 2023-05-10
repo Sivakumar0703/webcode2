@@ -10,8 +10,8 @@ const port = 8080;
 
 
 node_server.use("/",app_server);
-
 node_server.use(cors());
+
 
 //node_server.use(express.json());
 

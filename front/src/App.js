@@ -6,7 +6,7 @@ import './App.css';
 // import Search from './components/search/search';
 // import Categories from './components/categories/categories';
 // import Furniture from './routes/products/furniture/furniture';
-import {BrowserRouter  , Route , Link, Routes} from 'react-router-dom';
+import {BrowserRouter  , Route ,  Routes} from 'react-router-dom';
 // import Landing from './routes/products/LandingPage/landing';
 // import Layout from './components/layout/layout';
 import HomePage from './routes/products/home/homePage';
@@ -16,9 +16,30 @@ import Register from './routes/products/register/register';
 import Login from './routes/products/login/login';
 
 
+
+
 // <Route path="/landing"  element={<Landing />} />
 
 function App() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   return (
     <div className="App">
        {/* <Header />

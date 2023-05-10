@@ -14,12 +14,15 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 
 import axios from 'axios';
+import { toast } from 'react-toastify';
+
 
 
 const Login = () => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+   
 
     async function login() {
 
@@ -30,10 +33,15 @@ const Login = () => {
         console.log(user);
 
         try {
-            const result = await axios.post('https://webcodetwo.onrender.com/users/login' , user).data
+            const result = await axios.post('https://webcodetwo.onrender.com/users/login', user).data;
+            console.log(result); // why undefined
+
+            toast.success('Login successful'); 
+
 
         } catch (error) {
             console.log(error)
+            // toast.error(error)
         }
     }
 
@@ -58,11 +66,11 @@ const Login = () => {
 
     const [showPassword, setShowPassword] = React.useState(false);
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
 
 
 
@@ -91,35 +99,35 @@ const Login = () => {
                         value={email} onChange={(e) => setEmail(e.target.value)}
                     />   <br />
 
-                 
 
 
-<FormControl sx={{ m: 1 }} variant="standard" fullWidth value={password} onChange={(e) => setPassword(e.target.value)} >
-          <InputLabel htmlFor="standard-adornment-password" >Password</InputLabel>
-          <Input
-          
-            id="standard-adornment-password"
-            type={showPassword ? 'text' : 'password'}
-            
-                startAdornment= {
-                    <InputAdornment position="start">
-                        <VpnKeyIcon />
-                    </InputAdornment>
-                }
-                
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-          /> 
-        </FormControl>
+
+                    <FormControl sx={{ m: 1 }} variant="standard" fullWidth value={password} onChange={(e) => setPassword(e.target.value)} >
+                        <InputLabel htmlFor="standard-adornment-password" >Password</InputLabel>
+                        <Input
+
+                            id="standard-adornment-password"
+                            type={showPassword ? 'text' : 'password'}
+
+                            startAdornment={
+                                <InputAdornment position="start">
+                                    <VpnKeyIcon />
+                                </InputAdornment>
+                            }
+
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleClickShowPassword}
+                                        onMouseDown={handleMouseDownPassword}
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                    </FormControl>
 
                 </Box>
 

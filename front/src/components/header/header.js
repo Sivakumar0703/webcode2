@@ -2,6 +2,7 @@ import React from 'react';
 import  '../header/header.css'
 
 const Header = () => {
+  //const user = JSON.parse
   return (
     <div className='header'>
 
