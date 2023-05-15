@@ -63,11 +63,13 @@ function App() {
 
 <Route path='/electronics' element={<Electronics />} />
 
-<Route path='/cart/:productId' element={<Cart />} />
+<Route path='/cart/:productId/:startDate/:endDate/:fromTime/:toTime' element={<Cart />} />
 
 <Route path='/register' element={<Register />} />
 
 <Route path='/login' element={<Login />} />
+
+
 
 </Routes>
 

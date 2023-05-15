@@ -28,7 +28,7 @@ async function signup(){
 
 try {
  
-    const result = await axios.post('https://webcodetwo.onrender.com/users/signup' , user).data
+    const result = await axios.post('http://localhost:8080/users/signup' , user).data
      
      toast.success('Registration successful');
 } catch (error) {

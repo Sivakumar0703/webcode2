@@ -98,9 +98,17 @@ console.log('login starts')
                     id:user._id,
                     role:user.role
                 })
+             /*   let obj = {
+                   'email':  user.email,
+                   'role':  user.role,
+                   
+                } */
                 res.status(200).json({
-                    message: "Signup successfull",
-                    token
+                    message: "Login successfull",
+                    token,
+                   // obj
+                    user  // here password is also send to the client
+                    
                 })
                 
             } else {

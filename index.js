@@ -1,6 +1,6 @@
 const express = require("express");
 const app_server = require("./app");
-const cors = require('cors');
+//const cors = require('cors');
 const router = express.Router();
 
 //https://webcodetwo.onrender.com/
@@ -10,7 +10,7 @@ const port = 8080;
 
 
 node_server.use("/",app_server);
-node_server.use(cors());
+//node_server.use(cors());
 
 
 //node_server.use(express.json());

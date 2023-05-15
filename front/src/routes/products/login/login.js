@@ -15,6 +15,7 @@ import FormControl from '@mui/material/FormControl';
 
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import {useNavigate} from 'react-router-dom';
 
 
 
@@ -22,7 +23,7 @@ const Login = () => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-   
+    const navigate = useNavigate();
 
     async function login() {
 
@@ -33,14 +34,22 @@ const Login = () => {
         console.log(user);
 
         try {
-            const result = await axios.post('https://webcodetwo.onrender.com/users/login', user).data;
-            console.log(result); // why undefined
-
+           const result = await axios.post('http://localhost:8080/users/login', user)
+            .then(res => { 
+                localStorage.setItem('user',JSON.stringify(res.data.user));
+                console.log('res.data : ',res.data.user);
+                navigate('/') // taking user to landing page
+            })
+            
+            console.log(result)
+            
+        //  const result = await axios.post('http://localhost:8080/users/login', user).data;
+        //  console.log(result); // why undefined ?
             toast.success('Login successful'); 
 
 
         } catch (error) {
-            console.log(error)
+            console.log('error : ',error)
             // toast.error(error)
         }
     }

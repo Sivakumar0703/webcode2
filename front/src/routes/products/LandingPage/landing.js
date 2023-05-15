@@ -28,8 +28,8 @@ const Landing = () => {
 
     async function getData() {
       try {
-        const data = (await axios.get('https://webcodetwo.onrender.com/products')).data
-
+        //  const data = (await axios.get('https://webcodetwo.onrender.com/products')).data
+        const data = await axios.get('https://webcodetwo.onrender.com/products').then((res) => console.log(res))
         console.log(data.products)
         setProduct(data.products)
         setLoading(false)
@@ -44,7 +44,7 @@ const Landing = () => {
   }, [])
 
 
-
+  console.log(product)
 
   return (
 
@@ -54,14 +54,14 @@ const Landing = () => {
 
       {loading ? <h1>loading</h1> : (product.map((a) => {
 
-        
-
-        return  <HomePage data={a} key={a._id}/>
-                      
 
 
+        return <HomePage userdata={a} key={a._id} />
 
-      
+
+
+
+
 
 
 
@@ -78,5 +78,5 @@ const Landing = () => {
 
 export default Landing
 
-*/
 
+*/
