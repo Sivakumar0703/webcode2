@@ -19,6 +19,11 @@ userId : {
     required:true
 },
 
+userName : {
+    type:String,
+    required:true
+},
+
 fromDate : {
     type:String,
     required:true
@@ -41,7 +46,7 @@ totalAmount : {
 
 transcationId : {
     type:String,
-    required:true
+  //  required:true
 },
 
 createdOn: {

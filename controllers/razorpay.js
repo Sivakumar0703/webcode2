@@ -20,7 +20,7 @@ var razorpay = new Razorpay({
           };
 
           razorpay.orders.create(options, function(err, order) { // for every transaction a new order id is generated
-            console.log(order);
+            console.log('newly generated order id from backend',order);
             res.send({orderId : order.id})
           });
     })

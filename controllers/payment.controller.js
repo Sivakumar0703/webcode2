@@ -17,20 +17,23 @@ paymentRouter.get('/',async(req,res) => {
 
 paymentRouter.post('/cartPayment',async(req,res) => {
 //get from front end
-  const { productName , productId , userId , fromDate , toDate , totalDays , totalAmount , transcationId } = req.body
+  const { productName , productId , userId, userName , fromDate , toDate , totalDays , totalAmount , orderId } = req.body
 
 try {
     // post to database
     const newCart = new paymentModel({
-        productName,
-        productId,
-        userId,
-        fromDate,
-        toDate,
-        totalAmount,
-        totalDays,
-        transcationId
+        productName : productName,
+        productId : productId,
+        userId : userId,
+        userName : userName,
+        fromDate : fromDate,
+        toDate : toDate,
+        totalAmount : totalAmount,
+        totalDays : totalDays,
+        transcationId : orderId
     })
+
+
    await newCart.save()
     res.status(200).json({newCart,message:"payment done"})
 } catch (error) {
@@ -39,5 +42,7 @@ try {
 }
 
 })
+
+
 
 module.exports = paymentRouter;
