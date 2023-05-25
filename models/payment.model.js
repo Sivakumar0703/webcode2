@@ -44,9 +44,10 @@ totalAmount : {
     required:true
 },
 
-transcationId : {
+transactionId : {
     type:String,
-  //  required:true
+    required:true
+  
 },
 
 createdOn: {

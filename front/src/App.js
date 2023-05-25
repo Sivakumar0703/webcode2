@@ -65,6 +65,7 @@ function App() {
 
 <Route path='/cart/:productId/:startDate/:endDate/:fromTime/:toTime' element={<Cart />} />
 
+
 <Route path='/register' element={<Register />} />
 
 <Route path='/login' element={<Login />} />

@@ -11,16 +11,16 @@ var razorpay = new Razorpay({
     // creating an order
 
     razorRouter.post('/order' , (req,res)=>{
-      //  let {amount} = req.body
+        let {amount} = req.body
         console.log('request' , req.body)
         var options = {
-            amount: 500 * 100,  // amount in the smallest currency unit
+            amount: amount * 100,// 500 * 100,  // amount in the smallest currency unit
             currency: "INR",
             receipt: "order_rcptid_11"
           };
 
           razorpay.orders.create(options, function(err, order) { // for every transaction a new order id is generated
-            console.log('newly generated order id from backend',order);
+            console.log('newly generated order id from backend razorpay.js',order,err);
             res.send({orderId : order.id})
           });
     })

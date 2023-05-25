@@ -17,8 +17,8 @@ paymentRouter.get('/',async(req,res) => {
 
 paymentRouter.post('/cartPayment',async(req,res) => {
 //get from front end
-  const { productName , productId , userId, userName , fromDate , toDate , totalDays , totalAmount , orderId } = req.body
-
+  const { productName , productId , userId, userName , fromDate , toDate, totalAmount  , totalDays  , transactionId } = req.body
+   console.log('orderid from fron end', transactionId) // undefined
 try {
     // post to database
     const newCart = new paymentModel({
@@ -30,12 +30,12 @@ try {
         toDate : toDate,
         totalAmount : totalAmount,
         totalDays : totalDays,
-        transcationId : orderId
+        transactionId : transactionId // orderId should be here
     })
 
 
    await newCart.save()
-    res.status(200).json({newCart,message:"payment done"})
+    res.status(200).json({newCart,message:"payment done"}) // send to front end
 } catch (error) {
     console.log(error)
     res.status(500).json({message:"error occured in payment process",error})

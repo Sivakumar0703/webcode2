@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import '../cart/cart.css'
@@ -7,12 +7,12 @@ import moment from 'moment'
 
 
 
+
 const Cart = () => {
   const { productId, startDate, endDate, fromTime, toTime } = useParams()
 
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState();
-  // console.log(product)
   const fromDate = moment(startDate, 'DD-MM-YYYY')
   const toDate = moment(endDate, 'DD-MM-YYYY')
 
@@ -23,97 +23,101 @@ const Cart = () => {
 
   // razorpay
   const [payAmount, setPayAmount] = useState(0);
-  const [orderId, setOrderId] = useState(); // razorpay order id from backend
+  const [orderId, setOrderId] = useState(''); // razorpay order id from backend // line 81
 
+ 
 
+    // calculation total number of hours | result - total minutes
+    let initial = fromTime;
+    let initialTimeParts = initial.split(":");
+    let result1 = ((+initialTimeParts[0] * (60000 * 60)) + (+initialTimeParts[1] * 60000));
+ 
+    let final = toTime;
+    let finalTimeParts = final.split(":");
+    let result2 = ((+finalTimeParts[0] * (60000 * 60)) + (+finalTimeParts[1] * 60000));
+ 
+    let result = result2 - result1; // total number of hours in milliseconds
+    // console.log(result/3600000) // conversion to hour
+ 
+    const h = Math.floor(result / 1000 / 60 / 60); // total number of hours
+    const m = Math.floor((result / 1000 / 60 / 60 - h) * 60);
 
+    let td = (moment.duration(toDate.diff(fromDate)).asDays()) + 1 // for post method
 
-  //  function priceCalc(){
-  //    var cost = pice/((h*60)/60)
-  //  }
 
   useEffect(() => {
 
+   setHour(h)
+   setMinute(m)
+
+   setTotalDays((moment.duration(toDate.diff(fromDate)).asDays()) + 1) // total number of days
+  
     async function getData() {
+
       try {
+
         const data = (await axios.post('http://localhost:8080/products/getProductById', { productId: productId })).data // user defined variable: productId(from params)
         setProduct(data.product)
         setLoading(false)
         //console.log('inside fn',data.product)
 
-
-
-
-        // calculation total number of hours | result - total minutes
-        let initial = fromTime;
-        let initialTimeParts = initial.split(":");
-        let result1 = ((+initialTimeParts[0] * (60000 * 60)) + (+initialTimeParts[1] * 60000));
-
-        let final = toTime;
-        let finalTimeParts = final.split(":");
-        let result2 = ((+finalTimeParts[0] * (60000 * 60)) + (+finalTimeParts[1] * 60000));
-
-        let result = result2 - result1; // total number of hours in milliseconds
-        // console.log(result/3600000) // conversion to hour
-
-        const h = Math.floor(result / 1000 / 60 / 60); // total number of hours
-        const m = Math.floor((result / 1000 / 60 / 60 - h) * 60);
-
-        setHour(h)
-        setMinute(m)
-
-
-        setTotalDays((moment.duration(toDate.diff(fromDate)).asDays()) + 1) // total number of days
-        let td = (moment.duration(toDate.diff(fromDate)).asDays()) + 1 // for post method
-
-
-
         setAmount(Math.ceil((data?.product?.price) * (((moment.duration(toDate.diff(fromDate)).asDays()) + 1)) * (h)))
         let amt = Math.ceil((data?.product?.price) * (((moment.duration(toDate.diff(fromDate)).asDays()) + 1)) * (h)) // for post method (line : 92)
 
         // razor - to get order id
-        await axios.post('http://localhost:8080/razor/order').then((res) => {
-          console.log('response from backend to get order id',res, res.data)
-
-          setOrderId(res.data.id)
-
-        })
-
-console.log('total days',totalDays)
-
-
-        axios.post('http://localhost:8080/payment/cartPayment' , {
-        productName : data.product.name,
-        productId : data.product._id,
-        userId : JSON.parse(localStorage.getItem('user'))._id,
-        userName : JSON.parse(localStorage.getItem('user')).userName,
-        fromDate : startDate,
-        toDate : endDate,
-        totalAmount : amt,
-        totalDays : td,
-        orderId : orderId  // undefined
-        }).then((res) => console.log('data to back end',res)) 
-
+        getOrderId(amt , data);
 
       } catch (error) {
         console.log(error)
         setLoading(false)
       }
+
     }
     getData();
-
-
   }, [])
+
+
+  async function getOrderId(amt,data ){
+    try {
+      await  axios.post('http://localhost:8080/razor/order', {amount:amt}).then((res) => {
+          console.log('response from backend to get order id', res, res.data , res.data.orderId)
+           setOrderId(res.data.orderId)
+
+           // data to backend
+           passingData(res.data.orderId , data , amt)
+          
+
+        })
+      
+     } catch (error) {
+       console.log(error , 'get order id function error in cart.js')
+     }
+     
+  }
+
+  function passingData(Id , data , amt){
+    try {
+      axios.post('http://localhost:8080/payment/cartPayment', { // product & user detail to backend  
+      productName: data.product.name,
+      productId: data.product._id,
+      userId: JSON.parse(localStorage.getItem('user'))._id,
+      userName: JSON.parse(localStorage.getItem('user')).userName,
+      fromDate: startDate,
+      toDate: endDate,
+      totalAmount: amt,
+      totalDays: td,
+      transactionId: Id,//orderId,  // undefined
+    })
+    } catch (error) {
+      console.log('error in passing data to back end',error)
+    }
+  }
 
 
   // razorpay starts
 
-
-
   // key: rzp_test_f3Zt6s7fSoiZSu
   //secret:  ObqLEeSpRqphtxBZI88ju0E7
-
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -126,17 +130,14 @@ console.log('total days',totalDays)
       var options = {
         key: "rzp_test_f3Zt6s7fSoiZSu",
         secret: "ObqLEeSpRqphtxBZI88ju0E7",
-        amount: amount * 100, // amount is in paise so we multiple it with 100 | amount from backend
+        amount: amount * 100, 
         currency: "INR",
-        name: "ONLINE RENTAL", // rental company name
-        description: product.description, // product name 
-        order_id: orderId, // order id from backend
-        handler: function (response) { // response contain Payment_ID
-         // console.log(response);
-          //  alert("Payment_ID :", response.razorpay_payment_id);
-          console.log("Payment_ID : ", response.razorpay_payment_id, '|', 'order_id : ', response.razorpay_order_id, '|', 'signature : ', response.razorpay_signature)
-          //  alert('order_id',response.razorpay_order_id); // is from razorpay | for backend we use cart id | this order id is different one not the one is generated by backend
-          //  alert('signature',response.razorpay_signature)
+        name: "ONLINE RENTAL", 
+        description: product.description, 
+        order_id: orderId,
+        handler: function (response) { 
+
+          console.log("Payment_ID : ", response.razorpay_payment_id, '|', 'order_id : ', response.razorpay_order_id, '|', 'signature : ', response.razorpay_signature) 
         },
         prefill: {
           name: JSON.parse(localStorage.getItem('user')).userName, //your customer's name
@@ -156,47 +157,7 @@ console.log('total days',totalDays)
     }
   }
 
-
-
-
-
-
-
-
-
   // razorpay ends 
-
-
-
-
-
-
-
-  // payment process
-  async function getProduct() {
-    // data to be sent for backend
-    const cartDetail = {
-      productName: product.name,
-      productId: productId,
-      userId: JSON.parse(localStorage.getItem('user'))._id,
-      fromDate: startDate,
-      toDate: endDate,
-      totalDays: totalDays,
-      totalAmount: amount,
-      transcationId: '4567'
-    }
-
-    try {
-      const payment = await axios.post('http://localhost:8080/payment/cartPayment', cartDetail)
-    } catch (error) {
-      console.log(error)
-    }
-
-  }
-
-
-
-
 
   return (
 
