@@ -25,6 +25,51 @@ var razorpay = new Razorpay({
           });
     })
 
+// payment verfication
+
+razorRouter.post("/api/payment/verify",(req,res)=>{
+
+  let body=req.body.orderId + "|" + req.body.paymentId;
+ 
+   var crypto = require("crypto");
+   var expectedSignature = crypto.createHmac('sha256', 'ObqLEeSpRqphtxBZI88ju0E7')
+                                   .update(body.toString())
+                                   .digest('hex');
+                                   console.log("sig received " ,req.body.signature);
+                                   console.log("sig generated " ,expectedSignature);
+   var response = {"signatureIsValid":"false"}
+   if(expectedSignature === req.body.signature)
+    response={"signatureIsValid":"true"}
+       res.send(response);
+   });
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     module.exports = razorRouter
 
    

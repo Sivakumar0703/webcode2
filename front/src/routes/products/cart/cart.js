@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect }  from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import '../cart/cart.css'
@@ -25,33 +25,33 @@ const Cart = () => {
   const [payAmount, setPayAmount] = useState(0);
   const [orderId, setOrderId] = useState(''); // razorpay order id from backend // line 81
 
- 
 
-    // calculation total number of hours | result - total minutes
-    let initial = fromTime;
-    let initialTimeParts = initial.split(":");
-    let result1 = ((+initialTimeParts[0] * (60000 * 60)) + (+initialTimeParts[1] * 60000));
- 
-    let final = toTime;
-    let finalTimeParts = final.split(":");
-    let result2 = ((+finalTimeParts[0] * (60000 * 60)) + (+finalTimeParts[1] * 60000));
- 
-    let result = result2 - result1; // total number of hours in milliseconds
-    // console.log(result/3600000) // conversion to hour
- 
-    const h = Math.floor(result / 1000 / 60 / 60); // total number of hours
-    const m = Math.floor((result / 1000 / 60 / 60 - h) * 60);
 
-    let td = (moment.duration(toDate.diff(fromDate)).asDays()) + 1 // for post method
+  // calculation total number of hours | result - total minutes
+  let initial = fromTime;
+  let initialTimeParts = initial.split(":");
+  let result1 = ((+initialTimeParts[0] * (60000 * 60)) + (+initialTimeParts[1] * 60000));
+
+  let final = toTime;
+  let finalTimeParts = final.split(":");
+  let result2 = ((+finalTimeParts[0] * (60000 * 60)) + (+finalTimeParts[1] * 60000));
+
+  let result = result2 - result1; // total number of hours in milliseconds
+  // console.log(result/3600000) // conversion to hour
+
+  const h = Math.floor(result / 1000 / 60 / 60); // total number of hours
+  const m = Math.floor((result / 1000 / 60 / 60 - h) * 60);
+
+  let td = (moment.duration(toDate.diff(fromDate)).asDays()) + 1 // for post method
 
 
   useEffect(() => {
 
-   setHour(h)
-   setMinute(m)
+    setHour(h)
+    setMinute(m)
 
-   setTotalDays((moment.duration(toDate.diff(fromDate)).asDays()) + 1) // total number of days
-  
+    setTotalDays((moment.duration(toDate.diff(fromDate)).asDays()) + 1) // total number of days
+
     async function getData() {
 
       try {
@@ -65,7 +65,7 @@ const Cart = () => {
         let amt = Math.ceil((data?.product?.price) * (((moment.duration(toDate.diff(fromDate)).asDays()) + 1)) * (h)) // for post method (line : 92)
 
         // razor - to get order id
-        getOrderId(amt , data);
+        getOrderId(amt, data);
 
       } catch (error) {
         console.log(error)
@@ -77,39 +77,48 @@ const Cart = () => {
   }, [])
 
 
-  async function getOrderId(amt,data ){
+  async function getOrderId(amt, data) {
     try {
-      await  axios.post('http://localhost:8080/razor/order', {amount:amt}).then((res) => {
-          console.log('response from backend to get order id', res, res.data , res.data.orderId)
-           setOrderId(res.data.orderId)
+      await axios.post('http://localhost:8080/razor/order', { amount: amt }).then((res) => {
+        console.log('response from backend to get order id', res, res.data, res.data.orderId)
+        setOrderId(res.data.orderId)
 
-           // data to backend
-           passingData(res.data.orderId , data , amt)
-          
+        // data to backend
+        passingData(res.data.orderId, data, amt)
 
-        })
-      
-     } catch (error) {
-       console.log(error , 'get order id function error in cart.js')
-     }
-     
+
+      })
+
+    } catch (error) {
+      console.log(error, 'get order id function error in cart.js')
+    }
+
   }
 
-  function passingData(Id , data , amt){
+  function passingData(Id, data, amt) {
     try {
       axios.post('http://localhost:8080/payment/cartPayment', { // product & user detail to backend  
-      productName: data.product.name,
-      productId: data.product._id,
-      userId: JSON.parse(localStorage.getItem('user'))._id,
-      userName: JSON.parse(localStorage.getItem('user')).userName,
-      fromDate: startDate,
-      toDate: endDate,
-      totalAmount: amt,
-      totalDays: td,
-      transactionId: Id,//orderId,  // undefined
-    })
+        productName: data.product.name,
+        productId: data.product._id,
+        userId: JSON.parse(localStorage.getItem('user'))._id,
+        userName: JSON.parse(localStorage.getItem('user')).userName,
+        fromDate: startDate,
+        toDate: endDate,
+        totalAmount: amt,
+        totalDays: td,
+        transactionId: Id,//orderId,  // undefined
+      })
     } catch (error) {
-      console.log('error in passing data to back end',error)
+      console.log('error in passing data to back end', error)
+    }
+  }
+
+  function verify(payment , order , signature){
+    try {
+      axios.post('http://localhost:8080/razor/api/payment/verify' , {paymentId:payment , orderId:order , signature:signature}).then(res => console.log('payment verification data sent',res))
+      console.log(payment , order);
+    } catch (error) {
+      console.log('error in sending payment verification data cart.js',error)
     }
   }
 
@@ -130,14 +139,17 @@ const Cart = () => {
       var options = {
         key: "rzp_test_f3Zt6s7fSoiZSu",
         secret: "ObqLEeSpRqphtxBZI88ju0E7",
-        amount: amount * 100, 
+        amount: amount * 100,
         currency: "INR",
-        name: "ONLINE RENTAL", 
-        description: product.description, 
+        name: "ONLINE RENTAL",
+        description: product.description,
         order_id: orderId,
-        handler: function (response) { 
+        handler: function (response) {
 
-          console.log("Payment_ID : ", response.razorpay_payment_id, '|', 'order_id : ', response.razorpay_order_id, '|', 'signature : ', response.razorpay_signature) 
+          console.log("Payment_ID : ", response.razorpay_payment_id, '|', 'order_id : ', response.razorpay_order_id, '|', 'signature : ', response.razorpay_signature)
+          // payment verification
+          verify(response.razorpay_payment_id , response.razorpay_order_id , response.razorpay_signature)
+          // verfication ends
         },
         prefill: {
           name: JSON.parse(localStorage.getItem('user')).userName, //your customer's name
@@ -152,10 +164,13 @@ const Cart = () => {
         }
       };
 
+
       var pay = new window.Razorpay(options); // if payment is successful
       pay.open()
     }
-  }
+  } 
+
+
 
   // razorpay ends 
 
