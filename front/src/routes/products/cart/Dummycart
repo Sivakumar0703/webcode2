@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import {  useParams } from 'react-router-dom'
 import axios from 'axios'
 import '../cart/cart.css'
 import Loading from '../../../components/loading/loading'
 import moment from 'moment'
-import { set } from 'mongoose'
 
 
 
 
-const Cart = () => {
+
+const Dummycart = () => {
   const { productId, startDate, endDate, fromTime, toTime } = useParams()
 
   const [loading, setLoading] = useState(true);
@@ -22,7 +22,7 @@ const Cart = () => {
   const [totalDays, setTotalDays] = useState();  // total number of days
   const [amount, setAmount] = useState(); // total amount to pay
 
-  const [allow , setAllow] = useState(false);
+
 
   // razorpay
   const [payAmount, setPayAmount] = useState(0);
@@ -58,13 +58,11 @@ const Cart = () => {
     async function getData() {
 
       try {
-        console.log('use effect run , get product data');
+        console.log('use effect run');
 
-       
-          let data = (await axios.post('http://localhost:8080/products/getProductById', { productId: productId })).data // user defined variable: productId(from params)
+        let data = (await axios.post('http://localhost:8080/products/getProductById', { productId: productId })).data // user defined variable: productId(from params)
         setProduct(data?.product)
         setLoading(false)
-      
         //console.log('inside fn',data.product)
 
         setAmount(Math.ceil((data?.product?.price) * (((moment.duration(toDate.diff(fromDate)).asDays()) + 1)) * (h)))
@@ -72,52 +70,21 @@ const Cart = () => {
 
         // razor - to get order id
 
-        //getOrderId(amt, data);
-        if(!allow){
-          console.log('set allow false , get order id')
-        await axios.post('http://localhost:8080/razor/order', { amount: amt }).then((res) => {
-          console.log('response from backend to get order id', res, res.data, res.data.orderId)
-          setOrderId(res.data.orderId) 
-          console.log(res.data.orderId) }) }
-
-          if(allow){
-            console.log('set allow true , db data')
-            const payment = axios.post('http://localhost:8080/payment/cartPayment', { // product & user detail to backend for storing in db
-            productName: data.product.name,
-            productId: data.product._id,
-            userId: JSON.parse(localStorage.getItem('user'))._id,
-            userName: JSON.parse(localStorage.getItem('user')).userName,
-            fromDate: startDate,
-            toDate: endDate,
-            totalAmount: amt,
-            totalDays: td,
-            orderId: orderId,
-          })
-          console.log(payment , 'data to db');
-          }
-
-
+        getOrderId(amt, data);
+       
       } catch (error) {
         console.log(error)
         setLoading(false)
       }
 
     }
-    //getData();
-
-    return () => {
-      console.log('clean up starts')
-      getData();
-      setAllow(false)
-      
-    }
-
-
-  }, [allow])
+    getData();
+ 
+  }, [])
 
 
 
-/*
+
   async function getOrderId(amt, data) { // user to send amount to server & receiving order id
     try {
  
@@ -157,13 +124,13 @@ const Cart = () => {
     } catch (error) {
       console.log('error in passing data to back end', error)
     }
-  } */
+  } 
 
   function verify(payment, order, signature) {
     try {
       axios.post('http://localhost:8080/razor/api/payment/verify', { paymentId: payment, orderId: order, signature: signature }).then(res => console.log('payment verification data sent', res))
-      console.log('payment & order ',payment, order);
-      setAllow(true);
+      console.log(payment, order);
+   
     } catch (error) {
       console.log('error in sending payment verification data cart.js', error)
     }
@@ -288,4 +255,4 @@ const Cart = () => {
   )
 }
 
-export default Cart
+export default Dummycart

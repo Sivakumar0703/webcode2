@@ -3,7 +3,7 @@ const paymentRouter = require("express").Router();
 const paymentModel = require("../models/payment.model");
 
 
-paymentRouter.get('/',async(req,res) => {
+paymentRouter.get("/",async(req,res) => {
     try {
         let payment = await paymentModel.find();
         res.status(200).json({payment,message:"all payment data are fetched"})
@@ -17,8 +17,8 @@ paymentRouter.get('/',async(req,res) => {
 
 paymentRouter.post('/cartPayment',async(req,res) => {
 //get from front end
-  const { productName , productId , userId, userName , fromDate , toDate, totalAmount  , totalDays  , transactionId } = req.body
-   console.log('orderid from fron end', transactionId) // undefined
+  const { productName , productId , userId, userName , fromDate , toDate, totalAmount  , totalDays  , orderId } = req.body
+   console.log('orderid from fron end', orderId) // undefined
 try {
     // post to database
     const newCart = new paymentModel({
@@ -30,7 +30,7 @@ try {
         toDate : toDate,
         totalAmount : totalAmount,
         totalDays : totalDays,
-        transactionId : transactionId // orderId should be here
+        orderId : orderId // orderId should be here
     })
 
 
@@ -42,6 +42,19 @@ try {
 }
 
 })
+
+
+paymentRouter.post('/getCartItem' , async(req,res) => {
+    const userId = req.body.userId ;
+
+    try {
+        const item = await paymentModel.find({userId : userId})
+       res.status(200).json({item})
+    } catch (error) {
+        res.status(500).json({message:"error occurent during fetching cart items" , error:error})
+    }
+})
+
 
 
 

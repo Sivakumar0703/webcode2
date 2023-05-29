@@ -2,6 +2,7 @@ import React from 'react';
 import '../header/header.css'
 import {Navigate, useNavigate} from 'react-router-dom'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import Profile from '../../routes/profile/Profile';
 
 const Header = () => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -14,7 +15,9 @@ const logout = () =>{
 
 }
 
-
+const mycart = () => {
+  navigate('/Profile')
+}
 
 
 
@@ -36,7 +39,7 @@ const logout = () =>{
             <AccountCircleIcon />{user.userName}
             </button>
             <ul class="dropdown-menu">
-              <li><a className="dropdown-item" href="#">My Cart</a></li>
+              <li><a className="dropdown-item" onClick={mycart}>My Cart</a></li>
               <li><a className="dropdown-item" href="#" onClick={logout}>Logout</a></li>
             </ul>
           </div>

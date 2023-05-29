@@ -20,6 +20,7 @@ import dayjs from 'dayjs';
 
 
 
+
 const HomePage = () => {
 
 
@@ -91,9 +92,12 @@ const HomePage = () => {
   return (
 
     <Layout>
+<div>
 
+</div>
 
       <div className='row'>
+      
 
         <div className='col-md-3'>
 
@@ -115,6 +119,7 @@ const HomePage = () => {
       {loading ? <h1><Loading /></h1> : (product.map((data) => {
 
         return (
+          
 
           <div className="card bs product-con today " key={data._id}>
             <img src={data.image} className="card-img-top card-img" alt="img" />

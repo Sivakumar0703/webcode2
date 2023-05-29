@@ -44,7 +44,7 @@ totalAmount : {
     required:true
 },
 
-transactionId : {
+orderId : {
     type:String,
     required:true
   

@@ -1,0 +1,1 @@
+paymentModel.deletMany({productName:'projector'})

@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import React, { useState, useEffect }  from 'react'
+import {  useParams } from 'react-router-dom'
 import axios from 'axios'
 import '../cart/cart.css'
 import Loading from '../../../components/loading/loading'
 import moment from 'moment'
-import { set } from 'mongoose'
+import $ from "jquery";
 
 
 
 
-const Cart = () => {
+const New = () => {
   const { productId, startDate, endDate, fromTime, toTime } = useParams()
 
   const [loading, setLoading] = useState(true);
@@ -21,12 +21,14 @@ const Cart = () => {
   const [minute, setMinute] = useState();
   const [totalDays, setTotalDays] = useState();  // total number of days
   const [amount, setAmount] = useState(); // total amount to pay
+  //let amount = Math.ceil((data?.product?.price) * (((moment.duration(toDate.diff(fromDate)).asDays()) + 1)) * (h));
 
-  const [allow , setAllow] = useState(false);
+
+
 
   // razorpay
   const [payAmount, setPayAmount] = useState(0);
-  const [orderId, setOrderId] = useState(''); // razorpay order id from backend // line 81
+ // const [orderId, setOrderId] = useState(''); // razorpay order id from backend // line 81
 
 
 
@@ -58,44 +60,18 @@ const Cart = () => {
     async function getData() {
 
       try {
-        console.log('use effect run , get product data');
 
-       
-          let data = (await axios.post('http://localhost:8080/products/getProductById', { productId: productId })).data // user defined variable: productId(from params)
-        setProduct(data?.product)
+        const data = (await axios.post('http://localhost:8080/products/getProductById', { productId: productId })).data // user defined variable: productId(from params)
+        setProduct(data.product)
         setLoading(false)
-      
         //console.log('inside fn',data.product)
 
         setAmount(Math.ceil((data?.product?.price) * (((moment.duration(toDate.diff(fromDate)).asDays()) + 1)) * (h)))
         let amt = Math.ceil((data?.product?.price) * (((moment.duration(toDate.diff(fromDate)).asDays()) + 1)) * (h)) // for post method (line : 92)
 
         // razor - to get order id
-
-        //getOrderId(amt, data);
-        if(!allow){
-          console.log('set allow false , get order id')
-        await axios.post('http://localhost:8080/razor/order', { amount: amt }).then((res) => {
-          console.log('response from backend to get order id', res, res.data, res.data.orderId)
-          setOrderId(res.data.orderId) 
-          console.log(res.data.orderId) }) }
-
-          if(allow){
-            console.log('set allow true , db data')
-            const payment = axios.post('http://localhost:8080/payment/cartPayment', { // product & user detail to backend for storing in db
-            productName: data.product.name,
-            productId: data.product._id,
-            userId: JSON.parse(localStorage.getItem('user'))._id,
-            userName: JSON.parse(localStorage.getItem('user')).userName,
-            fromDate: startDate,
-            toDate: endDate,
-            totalAmount: amt,
-            totalDays: td,
-            orderId: orderId,
-          })
-          console.log(payment , 'data to db');
-          }
-
+       // getOrderId(amt, data);
+        console.log('effect')
 
       } catch (error) {
         console.log(error)
@@ -103,82 +79,36 @@ const Cart = () => {
       }
 
     }
-    //getData();
-
-    return () => {
-      console.log('clean up starts')
-      getData();
-      setAllow(false)
-      
-    }
-
-
-  }, [allow])
-
-
-
-/*
-  async function getOrderId(amt, data) { // user to send amount to server & receiving order id
-    try {
- 
-        await axios.post('http://localhost:8080/razor/order', { amount: amt }).then((res) => {
-        console.log('response from backend to get order id', res, res.data, res.data.orderId)
-        setOrderId(res.data.orderId)
-        console.log(res.data.orderId)
-
-        // data to backend
-        passingData(res.data.orderId, data, amt)
-
-      })
-      
-    } catch (error) {
-      console.log(error, 'get order id function error in cart.js')
-    }
-
-  }
-
-  function passingData(Id, data, amt) {
-    try {
-
-      if(allow){
-        const payment = axios.post('http://localhost:8080/payment/cartPayment', { // product & user detail to backend for storing in db
-        productName: data.product.name,
-        productId: data.product._id,
-        userId: JSON.parse(localStorage.getItem('user'))._id,
-        userName: JSON.parse(localStorage.getItem('user')).userName,
-        fromDate: startDate,
-        toDate: endDate,
-        totalAmount: amt,
-        totalDays: td,
-        orderId: Id,
-      })
-      console.log(payment , 'data to db');
-      }
-    } catch (error) {
-      console.log('error in passing data to back end', error)
-    }
-  } */
-
-  function verify(payment, order, signature) {
-    try {
-      axios.post('http://localhost:8080/razor/api/payment/verify', { paymentId: payment, orderId: order, signature: signature }).then(res => console.log('payment verification data sent', res))
-      console.log('payment & order ',payment, order);
-      setAllow(true);
-    } catch (error) {
-      console.log('error in sending payment verification data cart.js', error)
-    }
-  }
+    getData();
+  }, [])
 
 
   // razorpay starts
 
-  // key: rzp_test_f3Zt6s7fSoiZSu
-  //secret:  ObqLEeSpRqphtxBZI88ju0E7
+  var orderId;
+$(document).ready(function(){
+    var settings = {
+  "url": "/create/orderId",
+  "method": "POST",
+  "timeout": 0,
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "data": JSON.stringify({
+    "amount": amount
+  }),
+};
+$.ajax(settings).done(function (response) {
 
-  const handleSubmit = (e) => {
+    orderId=response.orderId;
+    console.log(orderId);
+    $("button").show();
+  });
+  });
+///////////////////////////////////////////////////
+
+const handleSubmit = (e) => {
     e.preventDefault();
-
-   
 
     if (payAmount === '') {
       alert('please enter amount');
@@ -195,13 +125,11 @@ const Cart = () => {
         order_id: orderId,
         handler: function (response) {
 
-          console.log("Payment_ID : ", response.razorpay_payment_id, '|', 'order_id : ', response.razorpay_order_id, '|', 'signature : ', response.razorpay_signature)
-          // payment verification
-          if(response.razorpay_payment_id){
-            verify(response.razorpay_payment_id, response.razorpay_order_id, response.razorpay_signature)
-          }
-          // verfication ends
+          console.log("Payment_ID : ", response.razorpay_payment_id, '|', 'order_id : ', response.razorpay_order_id, '|', 'signature : ', response.razorpay_signature);
+    
+
         },
+        
         prefill: {
           name: JSON.parse(localStorage.getItem('user')).userName, //your customer's name
           email: JSON.parse(localStorage.getItem('user')).email,
@@ -219,7 +147,14 @@ const Cart = () => {
       var pay = new window.Razorpay(options); // if payment is successful
       pay.open()
     }
-  }
+  } 
+
+
+
+  // key: rzp_test_f3Zt6s7fSoiZSu
+  //secret:  ObqLEeSpRqphtxBZI88ju0E7
+
+
 
 
 
@@ -241,14 +176,14 @@ const Cart = () => {
           <div className='col-md-10 img-section d-flex '>
 
 
-            <div> <img src={product?.image} alt={`${product?.name}`} className='cart-img' /></div>
+            <div> <img src={product.image} alt={`${product.name}`} className='cart-img' /></div>
 
             <div className='col-md-6 cart-detail'>
 
               <h1>Cart Detail</h1>
               <hr />
               <h5>Name : {JSON.parse(localStorage.getItem('user')).userName} </h5>
-              <h5>Product Name : {(product?.name)?.toUpperCase()}</h5>
+              <h5>Product Name : {(product.name).toUpperCase()}</h5>
               <h5>From : {startDate} </h5>
               <h5>To : {endDate} </h5>
 
@@ -256,7 +191,7 @@ const Cart = () => {
 
                 <h1>Payment Section</h1> <hr />
                 <p>Total days : {totalDays} </p>
-                <p>Rent per hour : {product?.price} </p>
+                <p>Rent per hour : {product.price} </p>
                 <p>Total hours :{hour}<span>hours</span> : {minute}<span>minutes</span> </p>
                 {/*   <p>To Pay :{Math.ceil(Number(product?.price) * Number(totalDays) * Number(hour))}</p> */}
                 <p>To Pay :{amount}</p>
@@ -288,4 +223,4 @@ const Cart = () => {
   )
 }
 
-export default Cart
+export default New
